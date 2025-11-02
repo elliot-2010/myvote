@@ -1,0 +1,28 @@
+{% extends 'vote/base.html' %}
+{% block title %}ثبت رأی{% endblock %}
+{% block content %}
+  <section class="card">
+    <h2>فرم ثبت رأی</h2>
+    <form method="post" action="{% url 'vote:submit' %}">
+      {% csrf_token %}
+      <div class="form-group">
+        <label>نام شما:</label>
+        <input type="text" name="voter_name" placeholder="مثلاً: علی رضایی" required>
+      </div>
+
+      <div class="form-group">
+        <label>انتخاب کاندیدا:</label>
+        {% for c in candidates %}
+          <label class="radio">
+            <input type="radio" name="candidate" value="{{ c.id }}" {% if forloop.first %}checked{% endif %}>
+            <span>{{ c.name }}</span>
+          </label>
+        {% empty %}
+          <p class="no-candidate">هیچ کاندیدایی ثبت نشده است.</p>
+        {% endfor %}
+      </div>
+
+      <button type="submit" class="btn">ثبت رأی</button>
+    </form>
+  </section>
+{% endblock %}

@@ -1,0 +1,41 @@
+{% extends 'vote/base.html' %}
+{% block title %}آمار رأی‌ها{% endblock %}
+{% block content %}
+  <section class="card">
+    <h2>آمار رأی‌ها</h2>
+    <ul class="stats-list">
+      {% for c in counts %}
+        <li>
+          <strong>{{ c.name }}</strong>
+          <span class="count">{{ c.votes_count }} رأی</span>
+        </li>
+      {% endfor %}
+    </ul>
+
+    <canvas id="chart" width="600" height="300"></canvas>
+  </section>
+
+  <script>
+    fetch("{% url 'vote:stats-data' %}")
+      .then(res => res.json())
+      .then(data => {
+        const ctx = document.getElementById("chart").getContext("2d");
+        new Chart(ctx, {
+          type: "bar",
+          data: {
+            labels: data.labels,
+            datasets: [{
+              label: "تعداد رأی‌ها",
+              data: data.data,
+              borderWidth: 1
+            }]
+          },
+          options: {
+            responsive: true,
+            animation: { duration: 1200, easing: 'easeOutQuart' },
+            scales: { y: { beginAtZero: true } }
+          }
+        });
+      });
+  </script>
+{% endblock %}
